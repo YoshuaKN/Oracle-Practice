@@ -58,4 +58,3 @@ VALUES (207, 'Kriti', 'Kroto', 'KRITZ', '555 123 4321', '06/17/2003', 'HR_REP', 
 UPDATE employees
 SET salary = 5000
 WHERE employee_id = 207;
-asdada
