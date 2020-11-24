@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION employmentYear(input_employee_id IN NUMBER)
 RETURN number IS 
    year NUMBER := 0; 
 BEGIN 
-   SELECT 2020-EXTRACT(YEAR FROM hire_date) into year
+   SELECT EXTRACT(YEAR FROM SYSDATE)-EXTRACT(YEAR FROM hire_date) into year
    FROM employees
    WHERE employee_id = input_employee_id; 
    RETURN year; 
