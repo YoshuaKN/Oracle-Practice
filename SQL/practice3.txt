@@ -1,0 +1,9 @@
+Practice 3
+1. SELECT sysdate FROM dual;
+2/3. SELECT employee_id, last_name, salary, salary*(1+15.5/100) "NEW SALARY" FROM employees;
+4. SELECT employee_id, last_name, salary, salary*(1+15.5/100) "NEW SALARY", salary*15.5/100 "INCREASE" FROM employees;
+5. SELECT INITCAP(last_name) AS NAME, LENGTH(last_name) AS LENGTH FROM employees WHERE SUBSTR(last_name,1,1) IN ('J', 'A', 'M');
+6. SELECT last_name, ROUND(MONTHS_BETWEEN(SYSDATE-hire_date)), 0) AS MONTHS_WORKED FROM employees ORDER BY hire_date DESC;
+7. SELECT last_name, LPAD(salary,15,'$') FROM employees;
+8. SELECT SUBSTR(last_name,1,8) || ' ' || LPAD(' ',ROUND(salary/1000,0),'*') "EMPLOYEES_AND_THEIR_SALARIES" FROM employees ORDER BY salary DESC;
+9. SELECT last_name, ROUND((SYSDATE-hire_date)/7, 0) AS TENURE FROM employees WHERE department_id = 90 ORDER BY hire_date;

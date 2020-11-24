@@ -1,0 +1,16 @@
+PRACTICE 1
+PART 1 :
+1. TRUE
+2. FALSE
+3. SELECT employee_id, last_name, salary*12 "ANNUAL SALARY" FROM employees;
+
+PART 2 :
+4. DESCRIBE departments;
+5. SELECT employee_id, last_name, job_id, hire_date AS STARTDATE FROM employees;
+6. Save File
+7. SELECT DISTINCT job_id FROM employees;
+8. SELECT employee_id "Emp #", last_name "Employee", job_id "Job", hire_date "STARTDATE" FROM employees;
+9. SELECT last_name || ', ' || job_id "Employee and Title" FROM employees;
+10. SELECT employee_id || ',' || first_name || ',' || last_name || ',' || email || ',' || phone_number 
+|| ',' || hire_date || ',' || job_id || ',' || salary || ',' || commission_pct || ',' || department_id 
+"THE_OUTPUT" FROM employees;

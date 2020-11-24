@@ -1,0 +1,16 @@
+Practice 2
+1. SELECT last_name, salary FROM employees WHERE salary > 12000;
+2. SELECT last_name, department_id FROM employees WHERE employee_id = 176;
+3. SELECT last_name, salary FROM employees WHERE salary > 5000 OR salary < 12000;
+4. SELECT last_name, job_id, hire_date FROM employees WHERE last_name = 'Matos' OR last_name = 'Taylor' ORDER BY hire_date;
+5. SELECT last_name, department_id FROM employees WHERE department_id IN (20, 50) ORDER BY last_name;
+6. SELECT last_name "Employee", salary "Monthly Salary" FROM employees WHERE salary BETWEEN 5000 AND 12000 AND department_id IN (20, 50);
+7. SELECT last_name, hire_date FROM employees WHERE extract(YEAR from hire_date) = 1994;
+8. SELECT last_name, job_id FROM employees WHERE manager_id IS NULL;
+9. SELECT last_name, salary, commission_pct FROM employees WHERE commission_pct IS NOT NULL ORDER BY salary, commission_pct;
+10. SELECT last_name, salary FROM employees WHERE salary > '&salary';
+11. SELECT employee_id, last_name, salary, department_id FROM employees WHERE manager_id = '&manager_num' ORDER BY '$order_var';
+12. SELECT last_name FROM employees WHERE last_name LIKE '__a%';
+13. SELECT last_name FROM employees WHERE last_name LIKE '%e%a%' OR last_name LIKE '%a%e%';
+14. SELECT last_name, job_id, salary FROM employees WHERE salary NOT IN (2500, 3500, 7000) AND job_id = 'SA_REP' OR job_id = 'ST_CLERK';
+15. SELECT last_name "Employee", salary "Monthly Salary", commission_pct FROM employees WHERE commission_pct = '0.2' AND salary BETWEEN 5000 AND 12000 AND department_id IN (20, 50); ????

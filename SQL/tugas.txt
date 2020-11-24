@@ -1,0 +1,144 @@
+1
+===========================================================================================================================================================
+
+CREATE table "Supplier" (
+    "SupplierID"        VARCHAR2(4) NOT NULL,
+    "Name"              VARCHAR2(50) NOT NULL,
+    "JoinDate"          DATE NOT NULL,
+     primary key        ("SupplierID")
+)
+
+INSERT INTO "Supplier" VALUES ('SP01', 'PT. Synnex Metrodata Indonesia', '01-15-2018');
+INSERT INTO "Supplier" VALUES ('SP02', 'PT. Metrodata Indonesia', '01-16-2018');
+INSERT INTO "Supplier" VALUES ('SP03', 'PT. Mitra Informatika Indonesia', '01-16-2018');
+INSERT INTO "Supplier" VALUES ('SP04', 'PT. Metro Mobile', '01-15-2018');
+
+CREATE table "Item" (
+    "ItemID"            VARCHAR2(3) NOT NULL,
+    "Name"              VARCHAR2(50) NOT NULL,
+    "Price"             NUMBER,
+    "Stock"             NUMBER,
+    "SupplierID"        VARCHAR2(4) NOT NULL,
+    PRIMARY KEY         ("ItemID"),
+    FOREIGN KEY         ("SupplierID") REFERENCES "Supplier" ("SupplierID")
+)
+
+INSERT INTO "Item" VALUES ('B01', 'Developer .Net', 6000000, 11, 'SP03');
+INSERT INTO "Item" VALUES ('B02', 'Developer Java', 6000000, 10, 'SP02');
+INSERT INTO "Item" VALUES ('B03', 'Developer C#', 5500000, 10, 'SP04');
+INSERT INTO "Item" VALUES ('B04', 'Developer Python', 5500000, 10, 'SP02');
+
+CREATE table "Transaction" (
+    "TransactionID"     VARCHAR2(3) NOT NULL,
+    "OrderDate"         DATE NOT NULL,
+    primary key         ("TransactionID")
+)
+
+INSERT INTO "Transaction" VALUES ('101', '10-10-2012');
+INSERT INTO "Transaction" VALUES ('102', '10-15-2012');
+INSERT INTO "Transaction" VALUES ('103', '11-05-2012');
+INSERT INTO "Transaction" VALUES ('104', '11-20-2012');
+INSERT INTO "Transaction" VALUES ('105', '11-30-2012');
+
+CREATE table "TransactionItem" (
+    "TransactionItemID" NUMBER NOT NULL,
+    "Quantity"          NUMBER NOT NULL,
+    "TransactionID"     VARCHAR2(3),
+    "ItemID"            VARCHAR2(3),
+    PRIMARY KEY         ("TransactionItemID"),
+    FOREIGN KEY         ("TransactionID") REFERENCES "Transaction" ("TransactionID"),
+    FOREIGN KEY         ("ItemID") REFERENCES "Item" ("ItemID")
+)
+
+INSERT INTO "TransactionItem" VALUES (01, 10, '101', 'B01');
+INSERT INTO "TransactionItem" VALUES (02, 5, '101', 'B02');
+INSERT INTO "TransactionItem" VALUES (03, 4, '102', 'B04');
+INSERT INTO "TransactionItem" VALUES (04, 5, '103', 'B03');
+INSERT INTO "TransactionItem" VALUES (05, 10, '104', 'B04');
+INSERT INTO "TransactionItem" VALUES (06, 3, '105', 'B02');
+
+2
+===========================================================================================================================================================
+
+1
+-------------------------------------------------
+SELECT      "ItemID" AS "Kode Barang", 
+            i."Name" AS "Nama Barang",  
+            s."Name" AS "Supplier" 
+FROM        "Item" i JOIN "Supplier" s 
+ON          (i."SupplierID" = s."SupplierID")
+ORDER BY    "ItemID";
+
+2
+-------------------------------------------------
+SELECT      "TransactionID" AS "Nomor Faktur", 
+            s."Name" AS "Supplier",  
+            i."Name" AS "Barang",
+            "Price"
+FROM        "TransactionItem" NATURAL JOIN "Item" i
+JOIN        "Supplier" s 
+ON          (i."SupplierID" = s."SupplierID")
+WHERE       "TransactionID" = 101;
+
+3
+-------------------------------------------------
+SELECT      "TransactionID" AS "Nomor Faktur", 
+            "Name" AS "Barang",  
+            "Quantity",
+            TO_CHAR("Price", '9,999,999.00') AS "Harga",
+            TO_CHAR("Price"*"Quantity", '99,999,999.00') AS "Total Harga"
+FROM        "TransactionItem"  NATURAL JOIN "Item" 
+ORDER BY    "TransactionID";
+
+3
+===========================================================================================================================================================
+SELECT      "TransactionID" AS "Nomor Faktur", 
+            TO_CHAR((
+                SELECT SUM("Quantity"*"Price") 
+                FROM "TransactionItem" 
+                NATURAL JOIN "Item"
+                WHERE "TransactionID" = t."TransactionID"), 
+                '99,999,999.00') 
+            AS "Total Faktur",
+            "OrderDate" AS "Tanggal Faktur",
+            "OrderDate"+14 AS "Jatuh Tempo"
+FROM        "Transaction" t 
+ORDER BY    "TransactionID";
+
+4
+===========================================================================================================================================================
+1
+-------------------------------------------------
+SELECT      "Name", 
+            SUM("Quantity") AS "Quantity"
+FROM        "TransactionItem" NATURAL JOIN "Item" 
+GROUP BY    "Name"
+ORDER BY    "Name";
+
+2
+-------------------------------------------------
+SELECT      "Name", 
+            SUM("Quantity") AS "Quantity"
+FROM        "TransactionItem" 
+NATURAL JOIN "Item" 
+NATURAL JOIN"Transaction" 
+WHERE       EXTRACT(MONTH FROM "OrderDate") = 10
+GROUP BY    "Name"
+ORDER BY    "Name";
+
+5
+===========================================================================================================================================================
+CREATE VIEW MonthlySold AS
+SELECT      "Name", 
+            NVL((SELECT "Quantity" FROM "TransactionItem" NATURAL JOIN "Transaction" t WHERE EXTRACT(MONTH FROM "OrderDate") = 10 AND "ItemID" = i."ItemID"), 0) AS "October",
+            NVL((SELECT "Quantity" FROM "TransactionItem" NATURAL JOIN "Transaction" t WHERE EXTRACT(MONTH FROM "OrderDate") = 11 AND "ItemID" = i."ItemID"), 0) AS "November",
+            NVL((SELECT "Quantity" FROM "TransactionItem" NATURAL JOIN "Transaction" t WHERE EXTRACT(MONTH FROM "OrderDate") = 12 AND "ItemID" = i."ItemID"), 0) AS "December"
+FROM        "Item" i
+ORDER BY    "Name";
+
+6
+===========================================================================================================================================================
+SELECT * FROM MonthlySold
+UNION ALL
+SELECT 'TOTAL' "Name", SUM("October"), SUM("November"), SUM("December") FROM MonthlySold;
+ 
